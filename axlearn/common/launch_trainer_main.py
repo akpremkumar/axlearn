@@ -309,7 +309,7 @@ def main(_):
 
     trainer_config = update_trainer_config(trainer_config)
 
-    Log model configuration to MLflow
+    # Log model configuration to MLflow
     try:
         config_dict = trainer_config.to_dict()
         measurement.global_recorder.reporter.log_config(
