@@ -82,11 +82,11 @@ class MLFlowReporter:
         if os.environ.get('POD_UID'):
             # Kubernetes environment
             pod_uid = os.environ.get('POD_UID', '')
-            hostname = os.environ.get('HOSTNAME', '')
+            hostname = os.environ.get('PMIX_HOSTNAME', '')
             
             # Generate 4-letter hash of POD_UID
             pod_hash = hashlib.md5(pod_uid.encode()).hexdigest()[:4]
-            return f"{pod_hash}{hostname}"
+            return f"{pod_hash}-{hostname}"
         
         elif os.environ.get('SLURM_JOBID'):
             # SLURM environment
@@ -205,6 +205,7 @@ class ScaleOutRecorder(measurement.Recorder):
         self.job_start_time = None
         self.allow_list = [
             r'/jax/checkpoint.*',
+            r'/jax/orbax.*'
             # Add other patterns here
         ]
 
