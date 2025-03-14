@@ -291,8 +291,12 @@ class MyOrbaxCheckpointer(OrbaxCheckpointer):
         # The right way to handle this is to try to get the latest checkpoint if step=None and
         # if no latest checkpoing is present return immediately without calling orbax layer.
         if step == None:
-            ckpt_dir = self.latest_checkpoint_path(self.config.dir)
-            step = parse_step_from_dir(ckpt_dir)
+            try:
+                ckpt_dir = self.latest_checkpoint_path(self.config.dir)
+                step = parse_step_from_dir(ckpt_dir)
+            except IndexError:
+                logging.info("Could not find any completed checkpoints under %s", self.config.dir)
+                return step, state
 
         return super().restore(step=step, state=state)
 
